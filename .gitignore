@@ -5,3 +5,14 @@ dist/
 .DS_Store
 .env
 .env.*
+!.env.example
+!.env.production
+!backend/.env.example
+backend/node_modules/
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/client/*
+!backend/client/.gitkeep
+deploy/*.zip
+deploy/frontend-staging/
+deploy/backend-staging/

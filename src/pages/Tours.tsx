@@ -4,36 +4,60 @@ import Footer from "@/components/layout/Footer";
 import WhatsAppCTA from "@/components/ui/WhatsAppCTA";
 import PageTransition from "@/components/ui/PageTransition";
 import ScrollReveal from "@/components/ui/ScrollReveal";
-import { tours } from "@/data/tours";
+import Seo from "@/components/seo/Seo";
+import SeoImage from "@/components/seo/SeoImage";
+import { useSite } from "@/context/SiteContext";
+import { breadcrumbJsonLd, graphJsonLd, organizationJsonLd, pageMeta } from "@/lib/seo";
 import { ArrowRight, Clock, MapPin, Tag } from "lucide-react";
+import { useMemo } from "react";
 
 export default function Tours() {
+  const { tours, settings } = useSite();
+  const jsonLd = useMemo(
+    () =>
+      graphJsonLd(
+        organizationJsonLd(settings),
+        breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Expeditions", path: "/tours" },
+        ]),
+      ),
+    [settings],
+  );
+
   return (
     <PageTransition>
+      <Seo
+        title={pageMeta.tours.title}
+        description={pageMeta.tours.description}
+        path={pageMeta.tours.path}
+        jsonLd={jsonLd}
+      />
       <Navbar />
+      <main id="main-content">
       
       {/* Header */}
-      <section className="relative pt-48 pb-32 bg-primary text-white overflow-hidden">
+      <section className="relative pt-32 sm:pt-40 md:pt-48 pb-16 sm:pb-24 md:pb-32 bg-primary text-white overflow-hidden">
         {/* CSS Diagonal Stripe Pattern */}
         <div className="absolute inset-0 pointer-events-none" style={{
           backgroundImage: 'repeating-linear-gradient(135deg, transparent, transparent 40px, rgba(255,255,255,0.03) 40px, rgba(255,255,255,0.03) 80px)'
         }}></div>
         
         {/* Background Watermark */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[clamp(6rem,15vw,16rem)] font-serif tracking-widest text-white opacity-[0.04] whitespace-nowrap pointer-events-none z-0">
+        <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[clamp(6rem,15vw,16rem)] font-serif tracking-widest text-white opacity-[0.04] whitespace-nowrap pointer-events-none z-0">
           EXPEDITIONS
         </div>
 
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-6xl md:text-8xl text-display mb-8">Our Expeditions</h1>
-              <div className="flex items-center justify-center gap-4 mb-8">
-                <div className="h-px w-24 bg-accent" />
+              <h1 className="text-4xl sm:text-6xl md:text-8xl text-display mb-6 sm:mb-8">Our Expeditions</h1>
+              <div className="flex items-center justify-center gap-4 mb-6 sm:mb-8">
+                <div className="h-px w-12 sm:w-24 bg-accent" />
                 <div className="w-3 h-3 rotate-45 bg-accent" />
-                <div className="h-px w-24 bg-accent" />
+                <div className="h-px w-12 sm:w-24 bg-accent" />
               </div>
-              <p className="text-xl text-white/80 font-sans leading-relaxed text-balance">
+              <p className="text-base sm:text-xl text-white/80 font-sans leading-relaxed text-balance">
                 Expertly crafted itineraries designed to bring you face-to-face with Africa's most extraordinary wildlife. Every detail handled.
               </p>
             </div>
@@ -42,19 +66,19 @@ export default function Tours() {
       </section>
 
       {/* Tour Grid */}
-      <section className="py-24 bg-background">
+      <section className="py-12 sm:py-20 md:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
             {tours.map((tour, index) => (
               <ScrollReveal key={tour.id} delay={index * 0.1} direction="scale">
                 <Link href={`/tours/${tour.id}`}>
-                  <div className="group bg-card h-[650px] flex flex-col hover:border-l-4 hover:border-l-accent transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl relative cursor-pointer">
+                  <div className="group bg-card h-auto flex flex-col hover:border-l-4 hover:border-l-accent transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl relative cursor-pointer">
                     
-                    {/* Image Area - 70% of card */}
-                    <div className="relative h-[65%] overflow-hidden">
-                      <img 
-                        src={tour.image} 
-                        alt={tour.title} 
+                    {/* Image Area */}
+                    <div className="relative h-56 sm:h-72 overflow-hidden">
+                      <SeoImage
+                        src={tour.image}
+                        alt={`${tour.title} in ${tour.park}, Rwanda`}
                         className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-[1.05]"
                       />
                       
@@ -77,7 +101,7 @@ export default function Tours() {
                     </div>
 
                     {/* Text Area */}
-                    <div className="p-8 flex flex-col flex-grow bg-card">
+                    <div className="p-6 sm:p-8 flex flex-col flex-grow bg-card">
                       <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">
                         <span className="flex items-center gap-1.5"><Clock size={14} className="text-accent" /> {tour.duration}</span>
                         <span className="flex items-center gap-1.5"><MapPin size={14} className="text-accent" /> {tour.park.split(" ")[0]}</span>
@@ -101,11 +125,11 @@ export default function Tours() {
       </section>
 
       {/* Info Section */}
-      <section className="py-24 bg-primary text-white border-t-4 border-accent relative overflow-hidden leaf-bg">
+      <section className="py-16 sm:py-24 bg-primary text-white border-t-4 border-accent relative overflow-hidden leaf-bg">
         <div className="container mx-auto px-4 md:px-6 text-center max-w-3xl relative z-10">
           <ScrollReveal>
             <Tag size={48} className="text-accent mx-auto mb-8" />
-            <h2 className="text-5xl text-display mb-8">Need a custom itinerary?</h2>
+            <h2 className="text-3xl sm:text-5xl text-display mb-6 sm:mb-8">Need a custom itinerary?</h2>
             <p className="text-white/80 font-sans mb-12 text-lg leading-relaxed text-balance">
               We specialize in bespoke safaris tailored to your exact preferences, schedule, and group size. Let our experts design your perfect African journey.
             </p>
@@ -118,6 +142,7 @@ export default function Tours() {
         </div>
       </section>
 
+      </main>
       <WhatsAppCTA />
       <Footer />
     </PageTransition>

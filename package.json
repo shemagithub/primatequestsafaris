@@ -10,7 +10,9 @@
     "dev": "node ./node_modules/vite/bin/vite.js --config vite.config.ts --host 0.0.0.0",
     "build": "node ./node_modules/vite/bin/vite.js build --config vite.config.ts",
     "preview": "node ./node_modules/vite/bin/vite.js preview --config vite.config.ts --host 0.0.0.0",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "backend": "npm --prefix backend run dev",
+    "backend:setup": "npm --prefix backend run setup"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

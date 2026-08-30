@@ -1,0 +1,101 @@
+Primates Quest Safaris — cPanel (split hosting)
+
+Frontend:  https://primatequestsafaris.com/
+Backend:   https://backend.primatequestsafaris.com/
+Admin:     https://backend.primatequestsafaris.com/admin
+
+Keep the Node.js app exactly as you have it:
+  Node.js version:        22.23.2
+  Application mode:       Production
+  Application root:       backend.primatequestsafaris.com
+  Application URL:        backend.primatequestsafaris.com
+  Application startup:    server.js
+Do not change Application URL to the main domain.
+
+
+A) Backend (the screen you already have)
+----------------------------------------
+1. Extract primatequestsafaris-backend.zip into:
+     /home/primvkm/backend.primatequestsafaris.com
+   You should see server.js and package.json in that folder.
+
+2. On Setup Node.js App click  RUN NPM INSTALL
+
+   If you see: "check availability of application has failed" / content-type
+   "text/html" vs "text/html; charset=utf-8" — npm install usually still worked.
+   That message is cPanel’s health check, not a failed install.
+
+   Confirm: File Manager → backend.primatequestsafaris.com → folder node_modules
+   If node_modules exists, ignore the red banner, click RESTART, continue.
+
+   To install without that check, open Terminal and run:
+
+     source /home/primvkm/nodevenv/backend.primatequestsafaris.com/22/bin/activate
+     cd /home/primvkm/backend.primatequestsafaris.com
+     npm install --omit=dev
+
+   Then RESTART the app in Setup Node.js App.
+
+3. Click + ADD VARIABLE  (or edit .env in that folder) and set:
+
+   NODE_ENV            production
+   SITE_URL            https://primatequestsafaris.com
+   FRONTEND_ORIGIN     https://primatequestsafaris.com,https://www.primatequestsafaris.com
+   DB_HOST             localhost
+   DB_PORT             3306
+   DB_USER             your_cpanel_mysql_user
+   DB_PASSWORD         your_cpanel_mysql_password
+   DB_NAME             your_cpanel_mysql_database
+   JWT_SECRET          a-long-random-string
+   SMTP_HOST           primatequestsafaris.com
+   SMTP_PORT           465
+   SMTP_SECURE         true
+   SMTP_USER           info@primatequestsafaris.com
+   SMTP_PASS           mailbox password
+   MAIL_NOTIFY         info@primatequestsafaris.com
+
+   SITE_URL must be the public website, not the backend subdomain.
+
+4. SAVE, then RESTART the app.
+
+5. Check:
+   https://backend.primatequestsafaris.com/api/health
+   should return {"ok":true,"database":"connected",...}
+
+
+B) Frontend (the public website)
+--------------------------------
+1. Open File Manager → public_html
+   (the folder for primatequestsafaris.com — not the backend.* folder)
+
+2. Delete the default placeholder files if they are only an empty index.
+
+3. Upload primatequestsafaris-frontend.zip into public_html and Extract.
+   You must see public_html/index.html and public_html/assets/
+
+4. Delete the zip.
+
+5. Visit https://primatequestsafaris.com/
+   Then https://primatequestsafaris.com/tours  (must not 404)
+
+6. Issue / force HTTPS for both:
+     primatequestsafaris.com
+     backend.primatequestsafaris.com
+
+
+C) Admin
+--------
+https://backend.primatequestsafaris.com/admin
+  admin@primatesquest.com
+  Admin@12345
+Change this password immediately.
+
+
+If the homepage is still “Index of /”
+  • index.html is not in public_html
+  • or you extracted into a subfolder (public_html/dist/) — move files up one level
+
+If tours/photos fail to load
+  • backend app is stopped — Restart it
+  • FRONTEND_ORIGIN is missing — add it and Restart
+  • https://backend.primatequestsafaris.com/api/health is not ok

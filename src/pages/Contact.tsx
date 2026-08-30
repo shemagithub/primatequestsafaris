@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
-import { useLocation, Link } from "wouter";
-import { useForm } from "react-hook-form";
+import { useMemo, useState, useRef } from "react";
+import { Link } from "wouter";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,8 +11,14 @@ import Footer from "@/components/layout/Footer";
 import WhatsAppCTA from "@/components/ui/WhatsAppCTA";
 import PageTransition from "@/components/ui/PageTransition";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import Seo from "@/components/seo/Seo";
+import SeoImage from "@/components/seo/SeoImage";
+import DateRangeField from "@/components/ui/DateRangeField";
 
-import { getContactTourOptions } from "@/data/tours";
+import { api } from "@/lib/api";
+import { useSite } from "@/context/SiteContext";
+import { countries } from "@/data/countries";
+import { breadcrumbJsonLd, faqJsonLd, graphJsonLd, organizationJsonLd, pageMeta } from "@/lib/seo";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -21,8 +27,8 @@ const formSchema = z.object({
   country: z.string().min(2, "Please select a country"),
   language: z.string().default("English"),
   
-  tour: z.string().min(1, "Please select a tour interest"),
-  dates: z.string().min(2, "Estimated dates are required"),
+  tours: z.array(z.string()).min(1, "Please select at least one expedition"),
+  dates: z.string().min(4, "Please select your travel dates"),
   guests: z.number().min(1).max(20),
   budget: z.number().min(0).max(3),
   
@@ -33,15 +39,6 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
-const tours = getContactTourOptions();
-
-const faqs = [
-  { q: "When is the best time to visit Rwanda?", a: "March–June and Sep–Dec, avoiding the long rains." },
-  { q: "How far in advance should I book?", a: "Gorilla permits sell 6–12 months ahead; book early." },
-  { q: "Is gorilla trekking physically demanding?", a: "Moderate difficulty, 2–6 hours of trekking at altitude." },
-  { q: "What's included in the permit price?", a: "Park entry, ranger guide, 1 hour with gorillas; accommodation separate." },
-];
 
 const FloatingInput = ({ name, label, type="text", register, errors, multiline=false, rows=3, ...props }: any) => {
   const Component = multiline ? 'textarea' : 'input';
@@ -93,9 +90,9 @@ const BudgetSlider = ({ value, onChange }: { value: number, onChange: (val: numb
           <div className="w-2 h-2 bg-white rounded-full" />
         </div>
       </div>
-      <div className="flex justify-between mt-4 relative z-0 pointer-events-none">
+      <div className="flex justify-between mt-4 relative z-0 pointer-events-none gap-1">
         {budgetLabels.map((l, i) => (
-          <div key={i} className="text-[10px] uppercase font-bold text-muted-foreground w-1/4 text-center cursor-pointer pointer-events-auto hover:text-primary transition-colors" onClick={() => onChange(i)}>{l}</div>
+          <div key={i} className="text-[8px] sm:text-[10px] uppercase font-bold text-muted-foreground w-1/4 text-center cursor-pointer pointer-events-auto hover:text-primary transition-colors leading-tight px-0.5" onClick={() => onChange(i)}>{l}</div>
         ))}
       </div>
     </div>
@@ -103,10 +100,11 @@ const BudgetSlider = ({ value, onChange }: { value: number, onChange: (val: numb
 };
 
 export default function Contact() {
-  const [, setLocation] = useLocation();
+  const { settings, faqs, tourOptions } = useSite();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -121,7 +119,7 @@ export default function Contact() {
       phone: "",
       country: "",
       language: "English",
-      tour: defaultTour,
+      tours: defaultTour ? [defaultTour] : [],
       dates: "",
       guests: 2,
       budget: 1,
@@ -136,7 +134,7 @@ export default function Contact() {
   const nextStep = async () => {
     let fieldsToValidate: any = [];
     if (step === 1) fieldsToValidate = ['name', 'email', 'phone', 'country', 'language'];
-    if (step === 2) fieldsToValidate = ['tour', 'dates', 'guests', 'budget'];
+    if (step === 2) fieldsToValidate = ['tours', 'dates', 'guests', 'budget'];
     
     const isValid = await form.trigger(fieldsToValidate);
     if (isValid) {
@@ -149,24 +147,57 @@ export default function Contact() {
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log("Form data submitted:", data);
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    form.reset();
-    setTimeout(() => {
-      setIsSuccess(false);
-      setStep(1);
-    }, 8000);
+    setSubmitError("");
+    try {
+      await api.createInquiry({
+        ...data,
+        tours: data.tours,
+        tour: data.tours.join(","),
+        whatsappPref: data.whatsappPref,
+      });
+      setIsSuccess(true);
+      form.reset();
+      setTimeout(() => {
+        setIsSuccess(false);
+        setStep(1);
+      }, 8000);
+    } catch (err) {
+      console.error(err);
+      setSubmitError(
+        err instanceof Error && err.message
+          ? err.message
+          : "We could not send your inquiry. Please try again or email us directly.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const now = new Date();
   const kigaliHour = (now.getUTCHours() + 2) % 24;
   const day = now.getUTCDay();
   const isOpen = day >= 1 && day <= 6 && kigaliHour >= 8 && kigaliHour < 18;
+  const jsonLd = useMemo(
+    () =>
+      graphJsonLd(
+        organizationJsonLd(settings),
+        breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ]),
+        faqJsonLd(faqs),
+      ),
+    [settings, faqs],
+  );
 
   return (
     <PageTransition>
+      <Seo
+        title={pageMeta.contact.title}
+        description={pageMeta.contact.description}
+        path={pageMeta.contact.path}
+        jsonLd={jsonLd}
+      />
       <style>{`
         @keyframes goldShimmer {
           0% { transform: translateX(-150%) skewX(-45deg); }
@@ -199,16 +230,17 @@ export default function Contact() {
       
       <div className="fixed top-0 left-0 w-full h-[2px] bg-accent z-[100]" />
       <Navbar />
+      <main id="main-content">
       
       <div className="w-full relative z-10 bg-background">
         
         {/* Header - shown above split screen */}
-        <div className="pt-40 pb-16 hidden lg:block relative overflow-hidden bg-background">
+        <div className="pt-32 sm:pt-40 pb-12 sm:pb-16 hidden lg:block relative overflow-hidden bg-background">
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
             <span className="text-[15vw] font-display font-bold text-primary tracking-tighter">CONTACT</span>
           </div>
           <div className="text-center relative z-10 px-4">
-            <h1 className="text-6xl text-display text-primary mb-4">Begin Your Quest</h1>
+            <h1 className="text-5xl xl:text-6xl text-display text-primary mb-4">Begin Your Quest</h1>
             <p className="text-lg text-muted-foreground font-sans max-w-xl mx-auto">
               Our safari specialists are ready to craft your perfect Rwandan itinerary.
             </p>
@@ -218,7 +250,7 @@ export default function Contact() {
         <section className="flex flex-col lg:flex-row min-h-[100dvh] lg:min-h-[850px] border-t border-border">
           
           {/* Left Panel */}
-          <div className="lg:w-[40%] bg-primary text-white relative overflow-hidden flex flex-col pt-32 lg:pt-16 p-8 lg:p-16 leaf-bg shadow-2xl z-10">
+          <div className="lg:w-[40%] bg-primary text-white relative overflow-hidden flex flex-col pt-28 sm:pt-32 lg:pt-16 p-6 sm:p-8 lg:p-16 leaf-bg shadow-2xl z-10">
             <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
               <div className="absolute top-0 left-0 w-full h-[200%] bg-gradient-to-r from-transparent via-accent/40 to-transparent w-1/2 animate-[goldShimmer_6s_infinite]" />
             </div>
@@ -234,15 +266,15 @@ export default function Contact() {
 
             <div className="relative z-10 flex flex-col h-full">
               <ScrollReveal>
-                <div className="lg:hidden text-center mb-12">
-                  <h1 className="text-5xl text-display text-accent mb-4">Begin Your Quest</h1>
+                <div className="lg:hidden text-center mb-8 sm:mb-12">
+                  <h1 className="text-4xl sm:text-5xl text-display text-accent mb-4">Begin Your Quest</h1>
                   <p className="text-base text-white/70 font-sans max-w-xl mx-auto">
                     Our safari specialists are ready to craft your perfect Rwandan itinerary.
                   </p>
                 </div>
 
-                <h3 className="text-4xl text-display text-accent mb-2">Primates Quest Safaris</h3>
-                <p className="text-white/70 italic font-serif text-lg mb-8">Where the mist parts for those who seek.</p>
+                <h3 className="text-3xl sm:text-4xl text-display text-accent mb-2">{settings.site_name}</h3>
+                <p className="text-white/70 italic font-serif text-lg mb-8">{settings.tagline}</p>
                 
                 <div className="flex items-center gap-4 mb-10">
                   <div className="h-[1px] flex-1 bg-accent/30" />
@@ -257,7 +289,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <h4 className="font-bold uppercase tracking-wider text-[10px] mb-1 text-white/50">Address</h4>
-                      <p className="font-sans text-sm leading-relaxed text-white">Kigali Heights, KN 7 Rd<br />P.O Box 1234<br />Kigali, Rwanda</p>
+                      <p className="font-sans text-sm leading-relaxed text-white">{settings.address_line1}<br />{settings.address_line2}<br />{settings.address_city}</p>
                     </div>
                   </div>
                   
@@ -267,7 +299,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <h4 className="font-bold uppercase tracking-wider text-[10px] mb-1 text-white/50">Phone & WhatsApp</h4>
-                      <p className="font-sans text-sm text-white">+250 788 000 000</p>
+                      <p className="font-sans text-sm text-white">{settings.phone}</p>
                     </div>
                   </div>
 
@@ -277,8 +309,8 @@ export default function Contact() {
                     </div>
                     <div>
                       <h4 className="font-bold uppercase tracking-wider text-[10px] mb-1 text-white/50">Email</h4>
-                      <p className="font-sans text-sm text-white mb-1">info@primatesquest.com</p>
-                      <p className="font-sans text-sm text-white">bookings@primatesquest.com</p>
+                      <p className="font-sans text-sm text-white mb-1">{settings.email}</p>
+                      <p className="font-sans text-sm text-white">{settings.email_bookings}</p>
                     </div>
                   </div>
 
@@ -300,7 +332,7 @@ export default function Contact() {
                         className="w-full flex items-center justify-between text-left group py-3" 
                         onClick={() => setOpenFaq(openFaq === i ? null : i)}
                       >
-                        <span className="font-sans text-sm font-medium text-white/90 group-hover:text-accent transition-colors pr-4">{faq.q}</span>
+                        <span className="font-sans text-sm font-medium text-white/90 group-hover:text-accent transition-colors pr-4">{faq.question}</span>
                         {openFaq === i ? <Minus className="text-accent w-4 h-4 shrink-0" /> : <Plus className="text-white/50 group-hover:text-accent w-4 h-4 shrink-0 transition-colors" />}
                       </button>
                       <AnimatePresence>
@@ -311,7 +343,7 @@ export default function Contact() {
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                           >
-                            <p className="text-white/60 text-sm leading-relaxed pb-4 pt-1">{faq.a}</p>
+                            <p className="text-white/60 text-sm leading-relaxed pb-4 pt-1">{faq.answer}</p>
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -323,7 +355,7 @@ export default function Contact() {
           </div>
 
           {/* Right Panel (Form) */}
-          <div ref={formRef} className="lg:w-[60%] bg-card p-6 md:p-12 lg:p-16 flex flex-col justify-center relative overflow-hidden">
+          <div ref={formRef} className="lg:w-[60%] bg-card p-5 sm:p-6 md:p-12 lg:p-16 flex flex-col justify-center relative overflow-hidden">
             
             <AnimatePresence>
               {isSuccess && (
@@ -352,9 +384,9 @@ export default function Contact() {
                       />
                     ))}
                   </div>
-                  <h2 className="text-5xl text-display text-primary mb-4">Your Adventure Awaits</h2>
+                  <h2 className="text-3xl sm:text-5xl text-display text-primary mb-4">Your Adventure Awaits</h2>
                   <p className="text-muted-foreground mb-8 max-w-md">
-                    One of our safari specialists will be in touch within 24 hours. Check your inbox and WhatsApp.
+                    Your request is saved with our team. A confirmation email is on its way, and a specialist will reply within 24 hours — usually sooner.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
                      <Link href="/tours" className="bg-accent text-primary px-8 py-3 uppercase tracking-wider text-sm font-bold hover:bg-primary hover:text-white transition-colors relative overflow-hidden group">
@@ -372,7 +404,7 @@ export default function Contact() {
             {!isSuccess && (
               <ScrollReveal delay={0.3} className="flex-1 flex flex-col w-full max-w-2xl mx-auto">
                 {/* Progress Bar */}
-                <div className="flex items-center justify-center mb-16 relative">
+                <div className="flex items-center justify-center mb-10 sm:mb-16 relative">
                    <div className="absolute left-1/2 top-[22px] w-[calc(100%-80px)] max-w-[300px] h-[2px] bg-border -translate-x-1/2 z-0">
                      <motion.div 
                        className="h-full bg-accent"
@@ -407,7 +439,7 @@ export default function Contact() {
                     <div className="w-1.5 h-1.5 bg-accent rounded-full" />
                     <span className="text-[10px] font-bold uppercase tracking-wider text-accent">Step {step} of 3</span>
                   </div>
-                  <h2 className="text-4xl text-display text-primary">
+                  <h2 className="text-3xl sm:text-4xl text-display text-primary">
                     {step === 1 ? "Who's Coming?" : step === 2 ? "Your Expedition" : "Final Details"}
                   </h2>
                 </div>
@@ -444,12 +476,9 @@ export default function Contact() {
                                      className="peer w-full bg-transparent border-b border-border/50 py-2 text-foreground outline-none focus:border-transparent transition-colors font-sans rounded-none appearance-none cursor-pointer mt-2"
                                    >
                                      <option value="" disabled hidden>Select country...</option>
-                                     <option value="US">United States</option>
-                                     <option value="UK">United Kingdom</option>
-                                     <option value="CA">Canada</option>
-                                     <option value="AU">Australia</option>
-                                     <option value="EU">Europe</option>
-                                     <option value="Other">Other</option>
+                                     {countries.map((country) => (
+                                       <option key={country} value={country}>{country}</option>
+                                     ))}
                                    </select>
                                    <ChevronDown className="absolute right-0 bottom-3 w-4 h-4 text-muted-foreground pointer-events-none" />
                                    <div className="absolute bottom-0 left-0 h-[2px] w-full bg-accent scale-x-0 peer-focus:scale-x-100 origin-left transition-transform duration-300" />
@@ -479,17 +508,25 @@ export default function Contact() {
                            {step === 2 && (
                              <div className="space-y-10">
                                <div>
-                                 <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-4">Tour of Interest</label>
+                                 <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Tours of interest</label>
+                                 <p className="text-xs text-muted-foreground mb-4">Select one or more expeditions.</p>
                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                   {tours.map(t => {
-                                     const isSelected = form.watch("tour") === t.id;
+                                   {tourOptions.map(t => {
+                                     const selected = form.watch("tours") || [];
+                                     const isSelected = selected.includes(t.id);
                                      return (
-                                       <div 
+                                       <button
+                                         type="button"
                                          key={t.id} 
-                                         onClick={() => form.setValue("tour", t.id, { shouldValidate: true })}
-                                         className={`relative rounded-none overflow-hidden cursor-pointer h-28 group transition-transform duration-300 hover:scale-[1.02] border-2 ${isSelected ? 'border-accent shadow-[0_0_15px_rgba(201,162,39,0.3)]' : 'border-transparent'}`}
+                                         onClick={() => {
+                                           const next = isSelected
+                                             ? selected.filter((id) => id !== t.id)
+                                             : [...selected, t.id];
+                                           form.setValue("tours", next, { shouldValidate: true });
+                                         }}
+                                         className={`relative rounded-none overflow-hidden cursor-pointer h-28 group text-left transition-transform duration-300 hover:scale-[1.02] border-2 ${isSelected ? 'border-accent shadow-[0_0_15px_rgba(201,162,39,0.3)]' : 'border-transparent'}`}
                                        >
-                                         <img src={t.img} alt={t.name} className="absolute inset-0 w-full h-full object-cover" />
+                                         <SeoImage src={t.img} alt={`${t.name} safari in Rwanda`} className="absolute inset-0 w-full h-full object-cover" />
                                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                                          <div className="absolute bottom-3 left-3 right-3">
                                            <h4 className="text-white text-sm md:text-base font-serif leading-tight">{t.name}</h4>
@@ -500,15 +537,26 @@ export default function Contact() {
                                              <Check className="w-3 h-3 text-primary stroke-[3]" />
                                            </div>
                                          )}
-                                       </div>
+                                       </button>
                                      )
                                    })}
                                  </div>
-                                 {form.formState.errors.tour && <p className="text-destructive text-[10px] font-bold uppercase mt-2 animate-shake">{form.formState.errors.tour.message as string}</p>}
+                                 {form.formState.errors.tours && <p className="text-destructive text-[10px] font-bold uppercase mt-2 animate-shake">{form.formState.errors.tours.message as string}</p>}
                                </div>
                            
                                <div className="grid md:grid-cols-2 gap-x-8 gap-y-4">
-                                 <FloatingInput name="dates" label="Estimated Travel Dates (e.g. Aug 2025)" register={form.register} errors={form.formState.errors} />
+                                 <Controller
+                                   control={form.control}
+                                   name="dates"
+                                   render={({ field, fieldState }) => (
+                                     <DateRangeField
+                                       label="Estimated travel dates"
+                                       value={field.value}
+                                       onChange={field.onChange}
+                                       error={fieldState.error?.message}
+                                     />
+                                   )}
+                                 />
                                  
                                  <div className="mt-6 pt-4 relative">
                                    <label className="absolute left-0 top-0 text-[10px] text-accent font-bold uppercase pointer-events-none">Number of Guests</label>
@@ -558,9 +606,9 @@ export default function Contact() {
                                </div>
                            
                                <div className="bg-primary/5 p-6 border border-primary/10 mt-4 rounded-xl">
-                                 <div className="flex items-center justify-between">
+                                 <div className="flex items-start sm:items-center justify-between gap-4">
                                    <div className="flex items-center gap-3">
-                                     <MessageCircle className="text-primary w-5 h-5" />
+                                     <MessageCircle className="text-primary w-5 h-5 shrink-0" />
                                      <span className="text-sm font-bold text-primary">I prefer contact via WhatsApp</span>
                                    </div>
                                    <button 
@@ -598,27 +646,34 @@ export default function Contact() {
                        </AnimatePresence>
                      </div>
 
-                     <div className="mt-12 flex items-center justify-between pt-8 border-t border-border">
+                     <div className="mt-10 sm:mt-12 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-6 sm:pt-8 border-t border-border">
                        {step > 1 ? (
-                         <button type="button" onClick={() => setStep(s => s - 1)} className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                         <button type="button" onClick={() => setStep(s => s - 1)} className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors flex items-center justify-center gap-2 min-h-11">
                            &larr; Back
                          </button>
-                       ) : <div />}
+                       ) : <div className="hidden sm:block" />}
                        
                        {step < 3 ? (
-                         <button type="button" onClick={nextStep} className="bg-accent text-primary px-8 py-4 uppercase tracking-wider text-sm font-bold hover:bg-primary hover:text-white transition-colors flex items-center gap-3 relative overflow-hidden group">
+                         <button type="button" onClick={nextStep} className="bg-accent text-primary px-8 py-4 uppercase tracking-wider text-sm font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-3 relative overflow-hidden group w-full sm:w-auto">
                            <span className="relative z-10">Next Step &rarr;</span>
                            <div className="absolute inset-0 bg-white/30 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] z-0" />
                          </button>
                        ) : (
-                         <button 
-                           type="submit" 
-                           disabled={isSubmitting} 
-                           className="bg-primary text-white px-8 py-4 uppercase tracking-wider text-sm font-bold hover:bg-accent hover:text-primary transition-all duration-300 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group"
-                         >
-                           <span className="relative z-10">{isSubmitting ? "Sending..." : "Send Inquiry"}</span> 
-                           <Send className={`w-4 h-4 relative z-10 transition-transform duration-300 ${isSubmitting ? 'translate-x-2 opacity-0' : 'group-hover:translate-x-1 group-hover:-translate-y-1'}`} />
-                         </button>
+                         <div className="flex flex-col items-stretch sm:items-end gap-2 w-full sm:w-auto">
+                           {submitError ? (
+                             <p className="text-destructive text-[10px] font-bold uppercase tracking-wider text-center sm:text-right">
+                               {submitError}
+                             </p>
+                           ) : null}
+                           <button
+                             type="submit"
+                             disabled={isSubmitting}
+                             className="bg-primary text-white px-8 py-4 uppercase tracking-wider text-sm font-bold hover:bg-accent hover:text-primary transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group w-full sm:w-auto"
+                           >
+                             <span className="relative z-10">{isSubmitting ? "Sending..." : "Send Inquiry"}</span>
+                             <Send className={`w-4 h-4 relative z-10 transition-transform duration-300 ${isSubmitting ? 'translate-x-2 opacity-0' : 'group-hover:translate-x-1 group-hover:-translate-y-1'}`} />
+                           </button>
+                         </div>
                        )}
                      </div>
                    </form>
@@ -629,6 +684,7 @@ export default function Contact() {
 
         </section>
       </div>
+      </main>
 
       <WhatsAppCTA />
       <Footer />
