@@ -61,7 +61,7 @@ export function mapPost(row, { includeUnpublished = false } = {}) {
     image: row.image || "",
     gallery: parseJson(row.gallery, []),
     category: row.category || "Safari",
-    author: row.author || "Primates Quest Safaris",
+    author: row.author || "Primate Quest Safaris",
     published: Boolean(row.published),
     publishedAt: row.published_at,
     createdAt: row.created_at,

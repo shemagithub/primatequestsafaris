@@ -250,9 +250,9 @@ function layout(title, subtitle, inner, actions = "") {
       <div class="sidebar-overlay" data-action="close-menu"></div>
       <aside class="sidebar">
         <div class="brand">
-          <img src="${escapeHtml(logo)}" alt="Primates Quest" />
+          <img src="${escapeHtml(logo)}" alt="Primate Quest" />
           <div>
-            <strong>Primates Quest</strong>
+            <strong>Primate Quest</strong>
             <span>Admin Panel</span>
           </div>
         </div>
@@ -297,9 +297,9 @@ function loginView() {
     <div class="login-shell">
       <div class="login-art">
         <div class="login-brand">
-          <img src="/uploads/logo.png" alt="Primates Quest" />
+          <img src="/uploads/logo.png" alt="Primate Quest" />
         </div>
-        <p class="eyebrow">Primates Quest Safaris</p>
+        <p class="eyebrow">Primate Quest Safaris</p>
         <h1>Command<br>the wild.</h1>
         <p>Manage expeditions, bookings, gallery, and every story on the website from one place.</p>
       </div>
@@ -447,7 +447,7 @@ function postFormView() {
     image: "",
     gallery: [],
     category: "Safari",
-    author: "Primates Quest Safaris",
+    author: "Primate Quest Safaris",
     published: true,
     publishedAt: "",
   };
@@ -470,7 +470,7 @@ function postFormView() {
             <select name="category">${categories.map((cat) => `<option value="${escapeHtml(cat)}" ${cat === currentCat ? "selected" : ""}>${escapeHtml(cat)}</option>`).join("")}</select>
           </div>
         </div>
-        ${field({ name: "author", label: "Author", value: post.author || "Primates Quest Safaris" })}
+        ${field({ name: "author", label: "Author", value: post.author || "Primate Quest Safaris" })}
         ${field({ name: "publishedAt", label: "Publish date", type: "date", value: dateFieldValue(post.publishedAt) })}
         <div class="switch"><input type="checkbox" name="published" ${post.published ? "checked" : ""} /> Published on website</div>
         ${field({ name: "excerpt", label: "Short summary", value: post.excerpt || "", placeholder: "One or two sentences for the Blog listing…", multiline: true, extra: "full" })}

@@ -231,6 +231,23 @@ export async function ensureDatabase() {
        MODIFY dates VARCHAR(180) DEFAULT ''`,
   ).catch(() => {});
 
+  await root.query(
+    `UPDATE settings SET setting_value = REPLACE(setting_value, 'Primates Quest Safaris', 'Primate Quest Safaris')
+     WHERE setting_value LIKE '%Primates Quest Safaris%'`,
+  ).catch(() => {});
+  await root.query(
+    `UPDATE settings SET setting_value = REPLACE(setting_value, 'Primates Quest', 'Primate Quest')
+     WHERE setting_value LIKE '%Primates Quest%'`,
+  ).catch(() => {});
+  await root.query(
+    `UPDATE posts SET author = REPLACE(author, 'Primates Quest Safaris', 'Primate Quest Safaris')
+     WHERE author LIKE '%Primates Quest%'`,
+  ).catch(() => {});
+  await root.query(
+    `UPDATE testimonials SET text = REPLACE(text, 'Primates Quest', 'Primate Quest')
+     WHERE text LIKE '%Primates Quest%'`,
+  ).catch(() => {});
+
   await root.query(`ALTER TABLE posts ADD COLUMN gallery JSON NULL`).catch(() => {});
   for (const post of seedPosts) {
     await root.query(

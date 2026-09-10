@@ -258,7 +258,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-20">
             <h2 className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">Why Choose Us</h2>
-            <h3 className="text-4xl sm:text-5xl md:text-6xl text-display text-foreground">The Primates Quest Standard</h3>
+            <h3 className="text-4xl sm:text-5xl md:text-6xl text-display text-foreground">The Primate Quest Standard</h3>
           </div>
           
           <div className="grid md:grid-cols-3 gap-12 relative">

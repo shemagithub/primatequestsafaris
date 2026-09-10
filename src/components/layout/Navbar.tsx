@@ -10,8 +10,8 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { settings } = useSite();
   const logoUrl = settings.logo || logoFallback;
-  const siteName = settings.site_name || "Primates Quest Safaris";
-  const title = siteName.replace(/\s+safaris$/i, "").trim() || "Primates Quest";
+  const siteName = settings.site_name || "Primate Quest Safaris";
+  const title = siteName.replace(/\s+safaris$/i, "").trim() || "Primate Quest";
 
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "";

@@ -78,7 +78,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
             <Link href="/">
-              <img src={logo} alt="Primates Quest Safaris" className="h-16 w-auto cursor-pointer" />
+              <img src={logo} alt="Primate Quest Safaris" className="h-16 w-auto cursor-pointer" />
             </Link>
             <p className="text-primary-foreground/80 font-sans leading-relaxed text-sm">
               {settings.footer_blurb}
@@ -98,7 +98,7 @@ export default function Footer() {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={`Primates Quest Safaris on ${label}`}
+                    aria-label={`Primate Quest Safaris on ${label}`}
                     className={className}
                   >
                     <Icon size={18} />
@@ -153,7 +153,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-primary-foreground/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-primary-foreground/60">
-          <p>&copy; {new Date().getFullYear()} Primates Quest Safaris. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Primate Quest Safaris. All rights reserved.</p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-center text-center sm:text-left">
             <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-accent"></span> Certified Eco-Tourism Operator</span>
           </div>

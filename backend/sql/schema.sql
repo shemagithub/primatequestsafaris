@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS posts (
   image VARCHAR(500) DEFAULT '',
   gallery JSON,
   category VARCHAR(80) DEFAULT 'Safari',
-  author VARCHAR(150) DEFAULT 'Primates Quest Safaris',
+  author VARCHAR(150) DEFAULT 'Primate Quest Safaris',
   published TINYINT(1) NOT NULL DEFAULT 0,
   published_at DATETIME NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

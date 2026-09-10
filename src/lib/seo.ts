@@ -1,6 +1,6 @@
 import { mediaUrl } from "./media";
 
-export const SITE_NAME = "Primates Quest Safaris";
+export const SITE_NAME = "Primate Quest Safaris";
 export const SITE_TAGLINE = "Gorilla trekking and wildlife safaris in Rwanda";
 export const DEFAULT_OG_IMAGE = "/og-image.jpg";
 
@@ -32,19 +32,19 @@ export const pageMeta = {
     path: "/",
     title: "Gorilla Trekking & Wildlife Safaris in Rwanda",
     description:
-      "Plan a Rwanda gorilla trek with Primates Quest Safaris. Local guides, Volcanoes National Park permits, chimpanzees in Nyungwe, and tailor-made wildlife itineraries from Kigali.",
+      "Plan a Rwanda gorilla trek with Primate Quest Safaris. Local guides, Volcanoes National Park permits, chimpanzees in Nyungwe, and tailor-made wildlife itineraries from Kigali.",
   },
   tours: {
     path: "/tours",
     title: "Rwanda Safari Tours & Gorilla Trekking Expeditions",
     description:
-      "Browse gorilla trekking, chimpanzee tracking, golden monkey walks, Akagera game drives, and custom Rwanda safaris with Primates Quest Safaris.",
+      "Browse gorilla trekking, chimpanzee tracking, golden monkey walks, Akagera game drives, and custom Rwanda safaris with Primate Quest Safaris.",
   },
   about: {
     path: "/about",
-    title: "About Primates Quest Safaris | Local Rwanda Experts",
+    title: "About Primate Quest Safaris | Local Rwanda Experts",
     description:
-      "Meet the Kigali-based team behind Primates Quest Safaris. Conservation-first gorilla trekking, unhurried wildlife encounters, and deep local knowledge of Rwanda.",
+      "Meet the Kigali-based team behind Primate Quest Safaris. Conservation-first gorilla trekking, unhurried wildlife encounters, and deep local knowledge of Rwanda.",
   },
   gallery: {
     path: "/gallery",
@@ -56,18 +56,18 @@ export const pageMeta = {
     path: "/blog",
     title: "Rwanda Safari Journal | Gorilla Trekking Stories & Tips",
     description:
-      "Guides and stories from Primates Quest Safaris: gorilla trekking prep, the best time to visit Rwanda, Nyungwe chimpanzees, and conservation.",
+      "Guides and stories from Primate Quest Safaris: gorilla trekking prep, the best time to visit Rwanda, Nyungwe chimpanzees, and conservation.",
   },
   contact: {
     path: "/contact",
     title: "Plan Your Rwanda Gorilla Trek | Contact Us",
     description:
-      "Inquire about gorilla permits, custom itineraries, and safari dates. Primates Quest Safaris is based in Kigali and replies by email and WhatsApp.",
+      "Inquire about gorilla permits, custom itineraries, and safari dates. Primate Quest Safaris is based in Kigali and replies by email and WhatsApp.",
   },
   notFound: {
     path: "/",
     title: "Page not found",
-    description: "This page does not exist. Explore Rwanda gorilla trekking and safari expeditions with Primates Quest Safaris.",
+    description: "This page does not exist. Explore Rwanda gorilla trekking and safari expeditions with Primate Quest Safaris.",
   },
 } as const;
 

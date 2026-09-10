@@ -20,7 +20,7 @@ function mailConfig() {
     secure: String(process.env.SMTP_SECURE || "true") !== "false",
     user: process.env.SMTP_USER || "info@primatequestsafaris.com",
     pass: process.env.SMTP_PASS || "",
-    fromName: process.env.MAIL_FROM_NAME || "Primates Quest Safaris",
+    fromName: process.env.MAIL_FROM_NAME || "Primate Quest Safaris",
     notify: process.env.MAIL_NOTIFY || process.env.SMTP_USER || "info@primatequestsafaris.com",
   };
 }

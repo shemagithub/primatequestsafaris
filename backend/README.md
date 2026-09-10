@@ -1,6 +1,6 @@
-# Primates Quest Backend
+# Primate Quest Backend
 
-MySQL API and admin panel for Primates Quest Safaris.
+MySQL API and admin panel for Primate Quest Safaris.
 
 ## What it manages
 

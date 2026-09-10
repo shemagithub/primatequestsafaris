@@ -389,7 +389,7 @@ export const seedTestimonials = [
   {
     author: "Sarah & James Mitchell",
     sub: "Gorilla Trekking & Nyungwe Combo, 2023",
-    text: "Looking into the eyes of a silverback in the wild changes you. Primates Quest orchestrated every detail perfectly. It wasn't just a tour; it was a profound life experience.",
+    text: "Looking into the eyes of a silverback in the wild changes you. Primate Quest orchestrated every detail perfectly. It wasn't just a tour; it was a profound life experience.",
     sort_order: 1,
     published: 1,
   },
@@ -433,7 +433,7 @@ export const seedFaqs = [
 ];
 
 export const seedSettings = {
-  site_name: "Primates Quest Safaris",
+  site_name: "Primate Quest Safaris",
   tagline: "Where the mist parts for those who seek.",
   logo: "/uploads/logo.png",
   phone: "+250 788 000 000",
@@ -455,7 +455,7 @@ export const seedSettings = {
   intro_label: "Our Philosophy",
   intro_title: "Where ancient rainforest meets volcano skylines.",
   intro_body:
-    "Primates Quest Safaris is built for travelers who want to experience nature profoundly. We believe in unhurried, exclusive encounters with Rwanda's most majestic creatures. Stand in the mist of the Virunga peaks and listen to the silence before a silverback emerges.",
+    "Primate Quest Safaris is built for travelers who want to experience nature profoundly. We believe in unhurried, exclusive encounters with Rwanda's most majestic creatures. Stand in the mist of the Virunga peaks and listen to the silence before a silverback emerges.",
   intro_image: "/uploads/chimp-nyungwe.jpg",
   years_experience: "12",
   permit_success: "100",
@@ -466,7 +466,7 @@ export const seedSettings = {
   about_title: "Beyond The Safari",
   about_subtitle: "Crafting legends in the mist.",
   about_intro:
-    "Primates Quest Safaris was born from a deep love for Rwanda's wilderness and a commitment to protecting its future. We don't just guide tours; we share our home.",
+    "Primate Quest Safaris was born from a deep love for Rwanda's wilderness and a commitment to protecting its future. We don't just guide tours; we share our home.",
   about_story_title: "Born in the land of a thousand hills.",
   about_story_p1:
     "Founded by native Rwandans who grew up in the shadows of the Virunga volcanoes, our company is built on an intimate knowledge of the land. We've spent decades walking these forests, studying animal behavior, and building relationships with local communities.",
@@ -511,7 +511,7 @@ Every permit funds park protection and neighbouring communities. That hour in th
       { src: "/uploads/gorilla-eyes.jpg", caption: "Keep seven metres, no flash, and let the hour unfold" },
     ],
     category: "Gorillas",
-    author: "Primates Quest Safaris",
+    author: "Primate Quest Safaris",
     published: 1,
     published_at: "2026-06-12 09:00:00",
   },
@@ -536,7 +536,7 @@ We plan around your dates rather than forcing a single “best” month. Permits
       { src: "/uploads/safari-lodge.jpg", caption: "Lodge nights are easier to find outside peak permit weeks" },
     ],
     category: "Safari",
-    author: "Primates Quest Safaris",
+    author: "Primate Quest Safaris",
     published: 1,
     published_at: "2026-07-03 09:00:00",
   },
@@ -561,7 +561,7 @@ We sequence Nyungwe before or after Volcanoes so the drive makes sense, with a K
       { src: "/uploads/trekkers-forest.jpg", caption: "Chimp treks start early, with rangers who know the valleys" },
     ],
     category: "Primates",
-    author: "Primates Quest Safaris",
+    author: "Primate Quest Safaris",
     published: 1,
     published_at: "2026-07-28 09:00:00",
   },

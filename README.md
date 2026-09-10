@@ -1,6 +1,6 @@
 # primatequestsafaris
 
-Website and admin for [Primates Quest Safaris](https://primatequestsafaris.com/) — gorilla trekking and wildlife safaris in Rwanda.
+Website and admin for [Primate Quest Safaris](https://primatequestsafaris.com/) — gorilla trekking and wildlife safaris in Rwanda.
 
 - Public site: https://primatequestsafaris.com/
 - API + admin: https://backend.primatequestsafaris.com/

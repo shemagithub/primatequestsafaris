@@ -1,4 +1,4 @@
-Primates Quest Safaris — cPanel (split hosting)
+Primate Quest Safaris — cPanel (split hosting)
 
 Frontend:  https://primatequestsafaris.com/
 Backend:   https://backend.primatequestsafaris.com/

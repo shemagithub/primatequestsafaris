@@ -13,7 +13,7 @@ import kigaliSkyline from "@/assets/kigali-skyline.jpg";
 import birding from "@/assets/birding.jpg";
 
 export const defaultSettings: Record<string, string> = {
-  site_name: "Primates Quest Safaris",
+  site_name: "Primate Quest Safaris",
   tagline: "Where the mist parts for those who seek.",
   phone: "+250 788 000 000",
   email: "info@primatequestsafaris.com",
@@ -34,7 +34,7 @@ export const defaultSettings: Record<string, string> = {
   intro_label: "Our Philosophy",
   intro_title: "Where ancient rainforest meets volcano skylines.",
   intro_body:
-    "Primates Quest Safaris is built for travelers who want to experience nature profoundly. We believe in unhurried, exclusive encounters with Rwanda's most majestic creatures. Stand in the mist of the Virunga peaks and listen to the silence before a silverback emerges.",
+    "Primate Quest Safaris is built for travelers who want to experience nature profoundly. We believe in unhurried, exclusive encounters with Rwanda's most majestic creatures. Stand in the mist of the Virunga peaks and listen to the silence before a silverback emerges.",
   intro_image: chimpNyungwe,
   featured_secondary_image: safariLodge,
   years_experience: "12",
@@ -46,7 +46,7 @@ export const defaultSettings: Record<string, string> = {
   about_title: "Beyond The Safari",
   about_subtitle: "Crafting legends in the mist.",
   about_intro:
-    "Primates Quest Safaris was born from a deep love for Rwanda's wilderness and a commitment to protecting its future. We don't just guide tours; we share our home.",
+    "Primate Quest Safaris was born from a deep love for Rwanda's wilderness and a commitment to protecting its future. We don't just guide tours; we share our home.",
   about_story_title: "Born in the land of a thousand hills.",
   about_story_p1:
     "Founded by native Rwandans who grew up in the shadows of the Virunga volcanoes, our company is built on an intimate knowledge of the land. We've spent decades walking these forests, studying animal behavior, and building relationships with local communities.",
@@ -74,7 +74,7 @@ export const defaultTestimonials = [
     id: 1,
     author: "Sarah & James Mitchell",
     sub: "Gorilla Trekking & Nyungwe Combo, 2023",
-    text: "Looking into the eyes of a silverback in the wild changes you. Primates Quest orchestrated every detail perfectly. It wasn't just a tour; it was a profound life experience.",
+    text: "Looking into the eyes of a silverback in the wild changes you. Primate Quest orchestrated every detail perfectly. It wasn't just a tour; it was a profound life experience.",
   },
   {
     id: 2,
@@ -157,7 +157,7 @@ export const defaultPosts: Post[] = [
     body: "A gorilla trek is the centrepiece of most Rwanda safaris, and a little preparation makes the day smoother.\n\nBook the permit first. Rwanda gorilla permits are limited and often sell out 6–12 months ahead for peak months.",
     image: heroGorilla,
     category: "Gorillas",
-    author: "Primates Quest Safaris",
+    author: "Primate Quest Safaris",
     publishedAt: "2026-06-12",
   },
 ];
@@ -172,7 +172,7 @@ export function normalizePost(raw: any): Post {
     image: raw.image || "",
     gallery: Array.isArray(raw.gallery) ? raw.gallery : [],
     category: raw.category || "Safari",
-    author: raw.author || "Primates Quest Safaris",
+    author: raw.author || "Primate Quest Safaris",
     publishedAt: raw.publishedAt || raw.published_at || raw.createdAt || null,
   };
 }

@@ -31,8 +31,8 @@ function wrap({ preheader, heading, kicker, body, footerNote }) {
           </tr>
           <tr>
             <td style="padding:28px 36px 12px;text-align:center;background:${FOREST};">
-              <img src="cid:pqlogo" alt="Primates Quest Safaris" width="72" height="72" style="display:block;margin:0 auto 14px;border-radius:50%;background:${CREAM};" />
-              <p style="margin:0;color:${GOLD};letter-spacing:0.28em;font-size:11px;font-family:Arial,sans-serif;text-transform:uppercase;">Primates Quest Safaris</p>
+              <img src="cid:pqlogo" alt="Primate Quest Safaris" width="72" height="72" style="display:block;margin:0 auto 14px;border-radius:50%;background:${CREAM};" />
+              <p style="margin:0;color:${GOLD};letter-spacing:0.28em;font-size:11px;font-family:Arial,sans-serif;text-transform:uppercase;">Primate Quest Safaris</p>
               <h1 style="margin:10px 0 4px;color:#f4efe6;font-weight:normal;font-size:32px;line-height:1.15;">${escapeHtml(heading)}</h1>
               <p style="margin:0 0 8px;color:#d8c48a;font-size:13px;font-family:Arial,sans-serif;letter-spacing:0.08em;text-transform:uppercase;">${escapeHtml(kicker)}</p>
             </td>
@@ -73,15 +73,15 @@ export function inquiryGuestEmail(data) {
   const heading = "Your quest is received";
   const body = `
     <p style="margin:0 0 16px;">Dear ${escapeHtml(data.name)},</p>
-    <p style="margin:0 0 16px;">Thank you for writing to Primates Quest Safaris. A specialist will review your dates and reply within 24 hours — usually sooner.</p>
+    <p style="margin:0 0 16px;">Thank you for writing to Primate Quest Safaris. A specialist will review your dates and reply within 24 hours — usually sooner.</p>
     <p style="margin:0 0 18px;color:${MUTED};font-size:13px;">This is what we have on file:</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${row("Expeditions", data.tours)}${row("Travel dates", data.dates)}${row("Guests", data.guests)}${row("Country", data.country)}</table>
     <p style="margin:18px 0 0;">Until then, keep an eye on your inbox${data.whatsappPref ? " and WhatsApp" : ""}.</p>
     <p style="margin:16px 0 0;font-style:italic;color:${FOREST};">Where the mist parts for those who seek.</p>
   `;
   return {
-    subject: "Your Rwanda expedition inquiry — Primates Quest Safaris",
-    text: `Dear ${data.name},\n\nWe received your inquiry for ${data.tours}. A specialist will reply within 24 hours.\n\nPrimates Quest Safaris`,
+    subject: "Your Rwanda expedition inquiry — Primate Quest Safaris",
+    text: `Dear ${data.name},\n\nWe received your inquiry for ${data.tours}. A specialist will reply within 24 hours.\n\nPrimate Quest Safaris`,
     html: wrap({
       preheader: "We have your expedition request. A specialist will reply within 24 hours.",
       heading,
@@ -132,8 +132,8 @@ export function subscriberEmail(email) {
     <p style="margin:0;font-style:italic;color:${FOREST};">See you in the mist.</p>
   `;
   return {
-    subject: "You joined the Wild Circle — Primates Quest Safaris",
-    text: `Welcome to the Primates Quest Wild Circle. We will send conservation notes and safari offers to ${email}.`,
+    subject: "You joined the Wild Circle — Primate Quest Safaris",
+    text: `Welcome to the Primate Quest Wild Circle. We will send conservation notes and safari offers to ${email}.`,
     html: wrap({
       preheader: "Insider stories, conservation notes, and safari offers.",
       heading,

@@ -85,7 +85,7 @@ app.use(express.urlencoded({ extended: true }));
 function cpanelPing(_req, res) {
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/html");
-  res.end("<!doctype html><title>Primates Quest API</title>OK");
+  res.end("<!doctype html><title>Primate Quest API</title>OK");
 }
 app.get("/", cpanelPing);
 app.head("/", cpanelPing);
@@ -164,7 +164,7 @@ async function start() {
     if (!fs.existsSync(envPath)) {
       console.warn("No backend/.env file found. Copy .env.example to .env.");
     }
-    console.log(`Primates Quest API running (${passenger ? "cPanel Passenger" : `port ${port}`})`);
+    console.log(`Primate Quest API running (${passenger ? "cPanel Passenger" : `port ${port}`})`);
     console.log(`Public site: ${SITE_URL}`);
     console.log(`Admin panel: https://backend.primatequestsafaris.com/admin`);
     verifyMailer();
